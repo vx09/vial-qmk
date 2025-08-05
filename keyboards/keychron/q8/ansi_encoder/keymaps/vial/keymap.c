@@ -81,8 +81,46 @@ void housekeeping_task_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // handle Keychron processing (original code)
     if (!process_record_keychron(keycode, record)) {
         return false;
     }
-    return true;
+
+    // Handle our custom mod-tap keys
+    static bool ctl_esc_active = false;
+    static bool ctl_quote_active = false;
+    static bool other_pressed = false;
+
+    switch (keycode) {
+        case KC_CAPS:  // Ctrl/Esc on Caps Lock
+            if (record->event.pressed) {
+                ctl_esc_active = true;
+                register_code(KC_LCTL);
+            } else {
+                unregister_code(KC_LCTL);
+                if (!other_pressed) tap_code(KC_ESC);
+                ctl_esc_active = false;
+                other_pressed = false;
+            }
+            return false;
+
+        case KC_QUOT:  // Ctrl/' on Quote key
+            if (record->event.pressed) {
+                ctl_quote_active = true;
+                register_code(KC_LCTL);
+            } else {
+                unregister_code(KC_LCTL);
+                if (!other_pressed) tap_code(KC_QUOT);
+                ctl_quote_active = false;
+                other_pressed = false;
+            }
+            return false;
+
+        default:
+            // Track if any other key was pressed while our mods were active
+            if (record->event.pressed && (ctl_esc_active || ctl_quote_active)) {
+                other_pressed = true;
+            }
+            return true;
+    }
 }
