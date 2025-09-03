@@ -90,40 +90,5 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_keychron(keycode, record)) {
         return false;
     }
-
-    static bool ctl_esc_active = false;
-    static bool ctl_quote_active = false;
-    static bool other_pressed = false;
-
-    switch (keycode) {
-        case CTL_ESC:
-            if (record->event.pressed) {
-                ctl_esc_active = true;
-                register_code(KC_LCTL);
-            } else {
-                unregister_code(KC_LCTL);
-                if (!other_pressed) tap_code(KC_ESC);
-                ctl_esc_active = false;
-                other_pressed = false;
-            }
-            return false;
-
-        case CTL_QUOT:
-            if (record->event.pressed) {
-                ctl_quote_active = true;
-                register_code(KC_LCTL);
-            } else {
-                unregister_code(KC_LCTL);
-                if (!other_pressed) tap_code(KC_QUOT);
-                ctl_quote_active = false;
-                other_pressed = false;
-            }
-            return false;
-
-        default:
-            if (record->event.pressed && (ctl_esc_active || ctl_quote_active)) {
-                other_pressed = true;
-            }
-            return true;
-    }
+    return true;
 }
