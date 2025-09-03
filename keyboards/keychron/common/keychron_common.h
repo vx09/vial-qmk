@@ -35,9 +35,7 @@ enum custom_keycodes {
     KC_TASK_VIEW,
     KC_FILE_EXPLORER,
     KC_SCREEN_SHOT,
-    KC_CORTANA,
-    CTL_QUOT,
-    CTL_ESC = SAFE_RANGE
+    KC_CORTANA
 };
 
 #define KC_TASK KC_TASK_VIEW
